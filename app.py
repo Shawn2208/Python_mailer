@@ -28,7 +28,8 @@ def send_email():
         msg['To'] = EMAIL_ADDRESS
         msg.set_content(f"From: {name} <{sender_email}>\n\nMessage:\n{message_body}")
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        with smtplib.SMTP('smtp.office365.com', 587) as smtp:
+            smtp.starttls()  # Start TLS encryption
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
 
