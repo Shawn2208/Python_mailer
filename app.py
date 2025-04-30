@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # ← Add this line
 import smtplib
 from email.message import EmailMessage
 import os
@@ -7,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, origins=["https://shawncportfolio.uk"])  # ← Allow CORS for your portfolio domain
 
 EMAIL_ADDRESS = os.getenv('EMAIL_USER')
 EMAIL_PASSWORD = os.getenv('EMAIL_PASS')
@@ -29,7 +31,7 @@ def send_email():
         msg.set_content(f"From: {name} <{sender_email}>\n\nMessage:\n{message_body}")
 
         with smtplib.SMTP('smtp.office365.com', 587) as smtp:
-            smtp.starttls()  # Start TLS encryption
+            smtp.starttls()
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
 
@@ -40,7 +42,5 @@ def send_email():
         return jsonify({'error': 'Failed to send email'}), 500
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
